@@ -1,5 +1,6 @@
 # Project files
 data/
+logs/
 .DS_Store
 
 # Byte-compiled / optimized / DLL files
@@ -109,3 +110,4 @@ venv.bak/
 
 # PyCharm
 .idea/
+ __pycache__/
