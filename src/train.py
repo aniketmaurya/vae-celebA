@@ -7,16 +7,18 @@ import os
 import pytz
 import yaml
 
+os.environ["KERAS_BACKEND"] = "plaidml.keras.backend"
+
 
 def train():
     with open("config.yml", 'r') as ymlfile:
-        params = yaml.load(ymlfile)
+        params = yaml.safe_load(ymlfile)
 
     dataset = Dataset(train_file='../data/Eval/train.csv',
                       val_file='../data/Eval/val.csv',
                       test_file='../data/Eval/test.csv',
                       images_path='../data/Img/',
-                      image_target_size=(params['image_shape'][0], params['image_shape'][1]))
+                      image_target_size=params['image_shape'])
 
     train_generator = dataset.get_train_generator(params['batch_size'], params['seed'])
     val_generator = dataset.get_val_generator(params['batch_size'], params['seed'])

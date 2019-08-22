@@ -10,6 +10,7 @@ class Dataset(object):
         self._test_file = test_file
         self._images_path = images_path
         self._image_target_size = image_target_size
+        self._color_mode = 'rgb' if image_target_size[-1] == 3 else 'grayscale'
         self._set_dfs()
 
     def _set_dfs(self):
@@ -26,8 +27,8 @@ class Dataset(object):
             x_col='image',
             y_col=None,
             class_mode='input',
-            target_size=self._image_target_size,
-            color_mode='grayscale',
+            target_size=(self._image_target_size[0], self._image_target_size[1]),
+            color_mode=self._color_mode,
             batch_size=batch_size,
             shuffle=True,
             seed=seed)
@@ -43,8 +44,8 @@ class Dataset(object):
             x_col='image',
             y_col=None,
             class_mode='input',
-            target_size=self._image_target_size,
-            color_mode='grayscale',
+            target_size=(self._image_target_size[0], self._image_target_size[1]),
+            color_mode=self._color_mode,
             batch_size=batch_size,
             shuffle=True,
             seed=seed)

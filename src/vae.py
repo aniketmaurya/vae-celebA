@@ -55,7 +55,7 @@ class VAE:
 
         # Apply reverse operation to the initial stacj of Conv2D: a Conv2DTranspose
         x = Conv2DTranspose(32, 3, padding='same', activation='relu', strides=(2, 2))(x)
-        x = Conv2D(1, 3, padding='same', activation='sigmoid')(x)
+        x = Conv2D(self._image_shape[-1], 3, padding='same', activation='sigmoid')(x)
 
         # We end up with a feature map of the same size as the original input
         decoder = Model(decoder_input, x)

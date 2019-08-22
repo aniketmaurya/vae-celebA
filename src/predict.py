@@ -7,18 +7,19 @@ import yaml
 
 def predict():
     with open("config.yml", 'r') as ymlfile:
-        params = yaml.load(ymlfile)
+        params = yaml.safe_load(ymlfile)
 
-    model_path = '../logs/model-2019-08-22-142947/' + 'vae_weights.h5'
+    model_path = '../logs/model-2019-08-22-160753/' + 'vae_weights.h5'
     vae = VAE(params['image_shape'], params['latent_dim'])
     vae.model.load_weights(model_path)
     decoder = vae.model.get_layer('model_1')
 
-    # Display a 2D manifold of the faces
-    n = 10  # figure with 15x15 faces
+    # Use the decoder network to turn arbitrary latent space vectors into images and display a 2D manifold of the faces
+    n = 5  # figure with 15x15 faces
     face_size_i = params['image_shape'][0]
     face_size_j = params['image_shape'][1]
-    figure = np.zeros(shape=(face_size_i * n, face_size_j * n))
+    color_channel = params['image_shape'][2]
+    figure = np.zeros(shape=(face_size_i * n, face_size_j * n, color_channel))
     # Linearly spaced coordinates on the unit square were transformed through the inverse CDF (ppf) of the Gaussian
     # to produce values of the latent variables z, since the prior of the latent space is Gaussian
     grid_x = norm.ppf(np.linspace(0.05, 0.95, n))
@@ -29,9 +30,9 @@ def predict():
             z_sample = np.array([[xi, yi]])
             z_sample = np.tile(z_sample, params['batch_size']).reshape(params['batch_size'], 2)
             x_decoded = decoder.predict(z_sample, batch_size=params['batch_size'])
-            digit = x_decoded[0].reshape(face_size_i, face_size_j)
+            face = x_decoded[0].reshape(face_size_i, face_size_j, color_channel)
             figure[i * face_size_i: (i + 1) * face_size_i,
-            j * face_size_j: (j + 1) * face_size_j] = digit
+            j * face_size_j: (j + 1) * face_size_j] = face
     plt.figure(figsize=(10, 10))
     plt.imshow(figure, cmap='Greys_r')
     plt.show()
