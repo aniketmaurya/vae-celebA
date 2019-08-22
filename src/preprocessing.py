@@ -9,7 +9,6 @@ def main():
     # Append subdirectory in path so that it works with the keras ImageGenerator
     all_images['image'] = all_images['image'].apply(lambda x: "img_align_celeba/{}".format(x))
 
-
     df_train = all_images.loc[all_images.dataset == 0]
     df_val = all_images.loc[all_images.dataset == 1]
     df_test = all_images.loc[all_images.dataset == 2]

@@ -34,13 +34,14 @@ class VAE:
         self.z_mean = Dense(self._latent_dim)(x)
         self.z_log_var = Dense(self._latent_dim)(x)
 
-        z = Lambda(self._sampling)([self.z_mean, self.z_log_var])
+        z = Lambda(VAE.sampling)([self.z_mean, self.z_log_var])
 
         return input_img, z
 
-    def _sampling(self, args):
+    @staticmethod
+    def sampling(args):
         z_mean, z_log_var = args
-        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self._latent_dim), mean=0., stddev=1.)
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], 2), mean=0., stddev=1.)
 
         return z_mean + K.exp(z_log_var) * epsilon
 
@@ -80,6 +81,6 @@ class VAE:
         # Since we have the custom layer we don't specify an external loss at compile time which means also we don't
         # pass target data during training
         vae.compile(optimizer='rmsprop', loss=self._vae_loss)
-        # vae.summary()
+        vae.summary()
 
         return vae
