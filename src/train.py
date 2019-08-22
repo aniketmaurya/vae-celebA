@@ -5,16 +5,12 @@ from datetime import datetime as dt
 from keras.callbacks import ModelCheckpoint, TensorBoard
 import os
 import pytz
+import yaml
 
 
 def train():
-    params = {
-        'batch_size': 16,
-        'epochs': 2,
-        'image_shape': (28, 28, 1),
-        'latent_dim': 2,
-        'seed': 42
-    }
+    with open("config.yml", 'r') as ymlfile:
+        params = yaml.load(ymlfile)
 
     dataset = Dataset(train_file='../data/Eval/train.csv',
                       val_file='../data/Eval/val.csv',

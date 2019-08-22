@@ -13,7 +13,7 @@ class Dataset(object):
         self._set_dfs()
 
     def _set_dfs(self):
-        self._train_df = pd.read_csv(self._train_file).sample(1000)
+        self._train_df = pd.read_csv(self._train_file).sample(1000)  # TODO: remove sample
         self._val_df = pd.read_csv(self._val_file).sample(1000)
         self._test_df = pd.read_csv(self._test_file)
 

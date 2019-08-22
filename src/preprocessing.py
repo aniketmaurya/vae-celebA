@@ -1,8 +1,10 @@
 import pandas as pd
+from keras.preprocessing.image import load_img
 
-def main():
 
-    filepath = 'data/Eval/list_eval_partition.txt'
+def preprocessing():
+    """ Splits the images into train/val/test files according to authors' partitions """
+    filepath = '..data/Eval/list_eval_partition.txt'
     all_images = pd.read_csv(filepath, sep=" ", header=None)
     all_images.columns = ['image', 'dataset']
 
@@ -13,13 +15,16 @@ def main():
     df_val = all_images.loc[all_images.dataset == 1]
     df_test = all_images.loc[all_images.dataset == 2]
 
-    df_train.to_csv('data/Eval/train.csv', index=False)
-    df_val.to_csv('data/Eval/val.csv', index=False)
-    df_test.to_csv('data/Eval/test.csv', index=False)
+    df_train.to_csv('../data/Eval/train.csv', index=False)
+    df_val.to_csv('../data/Eval/val.csv', index=False)
+    df_test.to_csv('../data/Eval/test.csv', index=False)
+
+def test():
+    img = load_img('../data/Img/img_align_celeba/000001.jpg')
+    print(img.size)
 
 
 if __name__ == "__main__":
-    main()
+    # preprocessing()
 
-
-
+    test()
