@@ -34,14 +34,13 @@ class VAE:
         self.z_mean = Dense(self._latent_dim)(x)
         self.z_log_var = Dense(self._latent_dim)(x)
 
-        z = Lambda(VAE.sampling)([self.z_mean, self.z_log_var])
+        z = Lambda(self._sampling)([self.z_mean, self.z_log_var])
 
         return input_img, z
 
-    @staticmethod
-    def sampling(args):
+    def _sampling(self, args):
         z_mean, z_log_var = args
-        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], 2), mean=0., stddev=1.)  # TODO: the 2 should be latent_dim
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self._latent_dim), mean=0., stddev=1.)
 
         return z_mean + K.exp(z_log_var) * epsilon
 
