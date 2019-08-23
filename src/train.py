@@ -25,12 +25,7 @@ def train():
 
     vae = VAE(params['image_shape'], params['latent_dim'])
 
-    pst = pytz.timezone('Europe/Amsterdam')
-    now = dt.strftime(dt.now().astimezone(pst), "%Y-%m-%d-%H%M%S")
-    log_base_dir = '../logs'
-    log_dir = os.path.join(log_base_dir, f'model-{now}')
-    os.makedirs(log_dir, exist_ok=True)
-
+    log_dir = append_datetime_to_path()
     callbacks_list = [
         ModelCheckpoint(filepath=os.path.join(log_dir, 'vae_weights.h5'), monitor='val_loss', save_best_only=True,
                         save_weights_only=True),
@@ -46,6 +41,15 @@ def train():
 
     # TODO: run test
     return history
+
+
+def append_datetime_to_path():
+    pst = pytz.timezone('Europe/Amsterdam')
+    now = dt.strftime(dt.now().astimezone(pst), "%Y-%m-%d-%H%M%S")
+    log_base_dir = '../logs'
+    log_dir = os.path.join(log_base_dir, f'model-{now}')
+    os.makedirs(log_dir, exist_ok=True)
+    return log_dir
 
 
 if __name__ == "__main__":

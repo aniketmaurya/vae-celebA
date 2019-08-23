@@ -1,5 +1,5 @@
-batch_size: 16
-epochs: 2
+batch_size: 128
+epochs: 5
 image_shape:
   - 90
   - 110

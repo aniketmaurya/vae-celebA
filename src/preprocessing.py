@@ -19,11 +19,5 @@ def preprocessing():
     df_val.to_csv('../data/Eval/val.csv', index=False)
     df_test.to_csv('../data/Eval/test.csv', index=False)
 
-def test():
-    img = load_img('../data/Img/img_align_celeba/000067.jpg')
-    print(img.size)
-
-
 if __name__ == "__main__":
     preprocessing()
-    test()

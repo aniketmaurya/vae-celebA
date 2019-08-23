@@ -14,9 +14,8 @@ class VAE:
         self.model = self._get_vae()
 
     def _get_z(self):
-        """ Encoder network: a very simple convnet which maps the input image x to two vectors,
+        """ Encoder network: a simple convnet which maps the input image x to two vectors,
             z_mean and z_log_variance and then generates a latent space point z.
-
         """
 
         input_img = Input(shape=self._image_shape)
@@ -34,6 +33,7 @@ class VAE:
         self.z_mean = Dense(self._latent_dim)(x)
         self.z_log_var = Dense(self._latent_dim)(x)
 
+        # Need to use a lambda layer to have the sampling code part of the network
         z = Lambda(self._sampling)([self.z_mean, self.z_log_var])
 
         return input_img, z
@@ -45,19 +45,20 @@ class VAE:
         return z_mean + K.exp(z_log_var) * epsilon
 
     def _get_decoded_z(self, z):
+        """ Decoder Network that decodes a latent space point z into an image """
         decoder_input = Input(K.int_shape(z)[1:])
 
-        # Upsample to the correct number of units
+        # Use a dense layer to psample to the correct number of units (exclude batch size with [1:])
         x = Dense(np.prod(self._shape_before_flattening[1:]), activation='relu')(decoder_input)
 
-        # Reshape into an image of the same shape as before our last Flatten layer
+        # Reshape into an image of the same shape as before the last Flatten layer in the encoder
         x = Reshape(self._shape_before_flattening[1:])(x)
 
-        # Apply reverse operation to the initial stacj of Conv2D: a Conv2DTranspose
+        # Apply reverse operation to the initial stack of Conv2D: a Conv2DTranspose
         x = Conv2DTranspose(32, 3, padding='same', activation='relu', strides=(2, 2))(x)
+        # We end up with a feature map of the same size as the original input
         x = Conv2D(self._image_shape[-1], 3, padding='same', activation='sigmoid')(x)
 
-        # We end up with a feature map of the same size as the original input
         decoder = Model(decoder_input, x)
         z_decoded = decoder(z)
 
